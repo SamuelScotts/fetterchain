@@ -13,7 +13,7 @@
               <h2>Files added: {{filesToBeAdded.length}}</h2>
               
               <!-- Only appears when images available to add -->
-              <v-btn v-if="filesToBeAdded.length > 0" @click="addImages()">Submit to network</v-btn>
+              <v-btn v-if="filesToBeAdded.length > 0" @click="addImages(filesToBeAdded)">Submit to network</v-btn>
             </v-col>
             
             <!-- Blank holder column -->
@@ -41,7 +41,7 @@ export default {
       // Main ledger holder.
       ledger: [],
       // Array to hold files to be uploaded in next block.
-      filesToBeAdded: []
+      filesToBeAdded: [],
     }
   },
 
@@ -62,29 +62,53 @@ export default {
       });
       fileReader.readAsBinaryString(file1);
     },
+
+    // Check for files already existing on blockchain.
+    // ***** WORK IN PROGRESS ******
     compareUploadToExisting(){
-      for(let i=0; i<this.filesToBeAdded.length;i++){
-        for (let j=0; j<this.ledger.length;j++){
-          if(this.filesToBeAdded[i] === this.ledger[j]){
-            alert(this.filesToBeAdded[i] + " already exists")
+      for (let i=0;i<this.ledger.length;i++){
+        for (let j=0; i<this.filesToBeAdded.length;i++){
+          for (let k=0; k<this.filesToBeAdded.length;k++){
+            if (this.ledger[i].data[j] === this.filesToBeAdded[k]){
+              alert("This file already exists.");
+              // ***** WORK IN PROGRESS ******
+              this.filesToBeAdded[k].pop;
+            }
           }
         }
       }
     },
+
     // Add images which have ben uploaded.
-    addImages(){
-      // OBTAIN LEDGER AND UPDATE!
-      // Run comparision between images to be uploaded and existing images.
+    addImages(files){
+     // Run comparision between images to be uploaded and existing images.
       this.compareUploadToExisting()
-
-      let timestamp = Date.now();
-      let previousHash = this.ledger.length
-      if (this.ledger.length == 0){
-        previousHash = 0;
-      }
-      let 
-
+      // Add new block - method call.
+      this.addBlock(files);
+      // Clear outstanding files to be added.
+      this.filesToBeAdded = [];
     },
-  }
-};
+
+    // Add new block to the blockchain - method.
+    addBlock(files){
+      let newBlock = {};
+      newBlock.index = this.ledger.length;
+      newBlock.timestamp = Date.now();
+      newBlock.data = files;
+      if (this.ledger.length == 0){
+        newBlock.prevHash = 0;
+      } else {
+      newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
+      }
+      newBlock.hash = this.calculateHash(newBlock.index, newBlock.timestamp, newBlock.data, newBlock.prevHash);
+      this.ledger.push(newBlock);
+      newBlock = {};
+        console.log(JSON.stringify(this.ledger, null, 4));
+    },
+
+    calculateHash(index, timestamp, data, prevHash) {
+      return sha256(index, timestamp, data, prevHash).toString();
+    }
+  },
+}
 </script>
