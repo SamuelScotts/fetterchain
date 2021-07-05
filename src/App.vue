@@ -67,7 +67,7 @@ export default {
     // ***** WORK IN PROGRESS ******
     compareUploadToExisting(){
       for (let i=0;i<this.ledger.length;i++){
-        for (let j=0; i<this.filesToBeAdded.length;i++){
+        for (let j=0; j<this.filesToBeAdded.length;j++){
           for (let k=0; k<this.filesToBeAdded.length;k++){
             if (this.ledger[i].data[j] === this.filesToBeAdded[k]){
               alert("This file already exists.");
