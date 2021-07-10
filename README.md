@@ -41,7 +41,7 @@ npm run serve
 ## Project Images
 Basic output after hashing image and adding block containing them:
 
-//![alt text](https://github.com/SamuelScotts/fetterchain/blob/master/images/Screen%20Grab.png)
+![alt text](https://github.com/SamuelScotts/fetterchain/blob/master/images/Screen%20Grab.png)
 
 ## Sources
 Used the article below for understanding on how to build blockchain using JavaScript:
