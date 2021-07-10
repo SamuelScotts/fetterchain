@@ -28,6 +28,7 @@
 //import HelloWorld from './components/X';
 import cryptoJS from 'crypto-js';
 import sha256 from 'crypto-js/sha256';
+import axios from 'axios';
 
 export default {
   name: 'App',
@@ -57,22 +58,19 @@ export default {
           // Running from Crypto-JS package, using SHA256 algorithm
           const encryptedvalue = sha256(cryptoJS.enc.Latin1.parse(file1)).toString();
           this.filesToBeAdded.push(encryptedvalue);
-          console.log(encryptedvalue)
         }      
       });
       fileReader.readAsBinaryString(file1);
     },
 
     // Check for files already existing on blockchain.
-    // ***** WORK IN PROGRESS ******
     compareUploadToExisting(){
       for (let i=0;i<this.ledger.length;i++){
         for (let j=0; j<this.filesToBeAdded.length;j++){
           for (let k=0; k<this.filesToBeAdded.length;k++){
             if (this.ledger[i].data[j] === this.filesToBeAdded[k]){
               alert("This file already exists.");
-              // ***** WORK IN PROGRESS ******
-              this.filesToBeAdded[k].pop;
+              this.filesToBeAdded.splice(k,1);
             }
           }
         }
@@ -84,9 +82,11 @@ export default {
      // Run comparision between images to be uploaded and existing images.
       this.compareUploadToExisting()
       // Add new block - method call.
-      this.addBlock(files);
-      // Clear outstanding files to be added.
-      this.filesToBeAdded = [];
+      if (this.filesToBeAdded.length > 0){
+        this.addBlock(files);
+        // Clear outstanding files to be added.
+        this.filesToBeAdded = [];
+      } 
     },
 
     // Add new block to the blockchain - method.
@@ -101,14 +101,28 @@ export default {
       newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
       }
       newBlock.hash = this.calculateHash(newBlock.index, newBlock.timestamp, newBlock.data, newBlock.prevHash);
-      this.ledger.push(newBlock);
+      //this.ledger.push(newBlock);
+      this.submitBlock(newBlock)
       newBlock = {};
-        console.log(JSON.stringify(this.ledger, null, 4));
+        //console.log(JSON.stringify(this.ledger, null, 4));
     },
 
+    // Calculate hash of block
     calculateHash(index, timestamp, data, prevHash) {
       return sha256(index, timestamp, data, prevHash).toString();
-    }
+    },
+
+    // Push to Express Web Server
+    async submitBlock(newBlock){
+            try {
+                await axios.post('http://localhost:3000/', newBlock);
+                let response = await axios.get('http://localhost:3000/');
+                console.log("Hello World!")
+                this.ledger = response.data;
+            } catch (error) {
+                console.error(error);
+            }
+        }
   },
 }
 </script>
