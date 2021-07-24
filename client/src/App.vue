@@ -5,19 +5,34 @@
           <v-row no-gutters>
             
             <!-- Blank holder column -->
-            <v-col cols="12" sm="2"></v-col>
+            <v-col cols="12" sm="2"><h2>Fetterchain</h2></v-col>
             
             <!-- Uploads occur on change i.e when image is selected.  File number increments each time -->
             <v-col cols="12" sm="8">
+            
+              <v-row class="mt-10">
+                <v-card v-for="(entry, index) in ledger" :key="index" class="mt-6" flat outlined>
+                  <v-card-title>Block: {{entry.index}}</v-card-title>
+                  <v-card-text>
+                    Index: {{entry.index}}<br/>
+                    Timestamp: {{entry.timestamp}}<br/>
+                    Data: {{entry.data[0]}}<br/>
+                    Prev Hash: {{entry.prevHash}}<br/>
+                    Block Hash: {{entry.hash}}
+                  </v-card-text>
+                </v-card>
+              </v-row>
+
+            </v-col>
+          
+            <!-- Blank holder column -->
+            <v-col cols="12" sm="2">
               <input type="file" ref="uploadedfile" @change="fileUpload($event)">
               <h2>Files added: {{filesToBeAdded.length}}</h2>
               
               <!-- Only appears when images available to add -->
               <v-btn v-if="filesToBeAdded.length > 0" @click="addImages(filesToBeAdded)">Submit to network</v-btn>
             </v-col>
-            
-            <!-- Blank holder column -->
-            <v-col cols="12" sm="2"></v-col>
           </v-row>
         </v-container>
     </v-main>
@@ -99,6 +114,7 @@ export default {
         newBlock.prevHash = 0;
       } else {
       newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
+      console.log(newBlock.prevHash);
       }
       newBlock.hash = this.calculateHash(newBlock.index, newBlock.timestamp, newBlock.data, newBlock.prevHash);
       //this.ledger.push(newBlock);
@@ -114,15 +130,22 @@ export default {
 
     // Push to Express Web Server
     async submitBlock(newBlock){
-            try {
-                await axios.post('http://localhost:3000/', newBlock);
-                let response = await axios.get('http://localhost:3000/');
-                console.log("Hello World!")
-                this.ledger = response.data;
-            } catch (error) {
-                console.error(error);
-            }
-        }
+        await axios.post('http://localhost:3000/', newBlock);
+        this.getLedger();
+    },
+
+    async getLedger(){
+      try {
+        let response = await axios.get('http://localhost:3000/');
+        console.log(response.data);
+        this.ledger = response.data;
+      } catch (error) {
+          console.error(error);
+      }
+    },
   },
+  mounted: function(){
+    this.getLedger();
+  }
 }
 </script>

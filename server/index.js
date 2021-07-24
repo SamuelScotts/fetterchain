@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   ledger.push(req.body);
   console.log(ledger);
+  res.send(ledger)
 })
 
 app.listen(port, () => {
