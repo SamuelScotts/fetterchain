@@ -116,7 +116,7 @@ export default {
       newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
       }
       newBlock.hash = sha256(newBlock.index + newBlock.timestamp + JSON.stringify(newBlock.data) + newBlock.prevHash).toString();
-      this.ledger.push(newBlock);
+      //this.ledger.push(newBlock);
       this.submitBlock(newBlock);
       this.getLedger();
       console.log(JSON.stringify(this.ledger, null, 4));
