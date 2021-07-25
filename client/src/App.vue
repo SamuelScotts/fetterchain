@@ -71,8 +71,8 @@ export default {
         if (evt.target.readyState == FileReader.DONE) {
           file1 = fileReader.result;
           // Running from Crypto-JS package, using SHA256 algorithm
-          const encryptedvalue = sha256(cryptoJS.enc.Latin1.parse(file1)).toString();
-          this.filesToBeAdded.push(encryptedvalue);
+          const encryptedValue = sha256(cryptoJS.enc.Latin1.parse(file1)).toString();
+          this.filesToBeAdded.push(encryptedValue);
         }      
       });
       fileReader.readAsBinaryString(file1);
@@ -109,39 +109,27 @@ export default {
       let newBlock = {};
       newBlock.index = this.ledger.length;
       newBlock.timestamp = Date.now();
-      newBlock.data = files;
+      newBlock.data = JSON.parse(JSON.stringify(files));
       if (this.ledger.length == 0){
         newBlock.prevHash = 0;
       } else {
       newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
-      console.log(newBlock.prevHash);
       }
-      newBlock.hash = this.calculateHash(newBlock.index, newBlock.timestamp, newBlock.data, newBlock.prevHash);
-      //this.ledger.push(newBlock);
-      this.submitBlock(newBlock)
-      newBlock = {};
-        //console.log(JSON.stringify(this.ledger, null, 4));
-    },
-
-    // Calculate hash of block
-    calculateHash(index, timestamp, data, prevHash) {
-      return sha256(index, timestamp, data, prevHash).toString();
+      newBlock.hash = sha256(newBlock.index + newBlock.timestamp + JSON.stringify(newBlock.data) + newBlock.prevHash).toString();
+      this.ledger.push(newBlock);
+      this.submitBlock(newBlock);
+      this.getLedger();
+      console.log(JSON.stringify(this.ledger, null, 4));
     },
 
     // Push to Express Web Server
     async submitBlock(newBlock){
         await axios.post('http://localhost:3000/', newBlock);
-        this.getLedger();
     },
 
     async getLedger(){
-      try {
         let response = await axios.get('http://localhost:3000/');
-        console.log(response.data);
         this.ledger = response.data;
-      } catch (error) {
-          console.error(error);
-      }
     },
   },
   mounted: function(){
