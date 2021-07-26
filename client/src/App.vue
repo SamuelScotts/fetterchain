@@ -63,19 +63,19 @@ export default {
 
   methods:{
     // Handle uploading of each image.  Currently done one at a time.
-    fileUpload(e) {
-      const filesToRead = e.target.files;
-      let file1 = filesToRead[0];
+    fileUpload(event) {
+      const fileBeingRead = event.target.files;
+      let file = fileBeingRead[0];
       const fileReader = new FileReader();
       fileReader.addEventListener('loadend', (evt) => {
         if (evt.target.readyState == FileReader.DONE) {
-          file1 = fileReader.result;
+          file = fileReader.result;
           // Running from Crypto-JS package, using SHA256 algorithm
-          const encryptedValue = sha256(cryptoJS.enc.Latin1.parse(file1)).toString();
+          const encryptedValue = sha256(cryptoJS.enc.Latin1.parse(file)).toString();
           this.filesToBeAdded.push(encryptedValue);
         }      
       });
-      fileReader.readAsBinaryString(file1);
+      fileReader.readAsBinaryString(file);
     },
 
     // Check for files already existing on blockchain.

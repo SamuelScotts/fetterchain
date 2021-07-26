@@ -16,9 +16,21 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  ledger.push(req.body);
-  console.log(ledger);
-  //axios.post('http://localhost:3001/', req.body);
+  if (ledger.length === 0){
+    ledger.push(req.body);
+    console.log(ledger);
+    axios.post('http://localhost:3002/', req.body);
+  } else {
+    for (let i=0; i < ledger.length; i++){
+      if (req.body.hash == ledger[i].hash){
+        break;
+      } else {
+        ledger.push(req.body);
+        console.log(ledger);
+        axios.post('http://localhost:3002/', req.body);
+      }
+    }
+  }  
 })
 
 app.listen(port, () => {

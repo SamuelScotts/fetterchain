@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const port = 3000;
+const port = 3002;
 const axios = require('axios');
 
 app.use(cors());
@@ -19,7 +19,7 @@ app.post('/', (req, res) => {
   if (ledger.length === 0){
     ledger.push(req.body);
     console.log(ledger);
-    axios.post('http://localhost:3001/', req.body);
+    axios.post('http://localhost:3000/', req.body);
   } else {
     for (let i=0; i < ledger.length; i++){
       if (req.body.hash == ledger[i].hash){
@@ -27,17 +27,11 @@ app.post('/', (req, res) => {
       } else {
         ledger.push(req.body);
         console.log(ledger);
-        axios.post('http://localhost:3001/', req.body);
+        axios.post('http://localhost:3000/', req.body);
       }
     }
   }  
 })
-
-/* app.post('/', (req, res) => {
-  ledger.push(req.body);
-  console.log(ledger);
-  axios.post('http://localhost:3001/', req.body);
-}) */
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
