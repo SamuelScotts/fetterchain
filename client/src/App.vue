@@ -116,24 +116,19 @@ export default {
       newBlock.prevHash = this.ledger[this.ledger.length - 1].hash
       }
       newBlock.hash = sha256(newBlock.index + newBlock.timestamp + JSON.stringify(newBlock.data) + newBlock.prevHash).toString();
-      //this.ledger.push(newBlock);
       this.submitBlock(newBlock);
-      this.getLedger();
-      console.log(JSON.stringify(this.ledger, null, 4));
     },
-
     // Push to Express Web Server
     async submitBlock(newBlock){
-        await axios.post('http://localhost:3000/', newBlock);
-    },
-
-    async getLedger(){
-        let response = await axios.get('http://localhost:3000/');
-        this.ledger = response.data;
+      await axios.post('http://localhost:3000/', newBlock);
+      let response = await axios.get('http://localhost:3000/');
+      this.ledger = response.data;
+      console.log(JSON.stringify(this.ledger, null, 4));
     },
   },
-  mounted: function(){
-    this.getLedger();
+  mounted: async function(){
+    let response = await axios.get('http://localhost:3000/');
+    this.ledger = response.data;
   }
 }
 </script>

@@ -12,32 +12,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 let ledger = [];
 
 app.get('/', (req, res) => {
-  res.send(ledger)
+  res.send(ledger); 
 })
 
 app.post('/', (req, res) => {
-  if (ledger.length === 0){
+  if (ledger.length == 0){
     ledger.push(req.body);
     console.log(ledger);
+    res.send(ledger);
     axios.post('http://localhost:3001/', req.body);
   } else {
-    for (let i=0; i < ledger.length; i++){
-      if (req.body.hash == ledger[i].hash){
-        break;
-      } else {
-        ledger.push(req.body);
-        console.log(ledger);
-        axios.post('http://localhost:3001/', req.body);
-      }
+    if (req.body.hash == ledger[ledger.length - 1].hash){
+      console.log("Stopped!");
+    } else {
+      ledger.push(req.body);
+      console.log(ledger);
+      res.send(ledger);
+      axios.post('http://localhost:3001/', req.body);
     }
   }  
 })
-
-/* app.post('/', (req, res) => {
-  ledger.push(req.body);
-  console.log(ledger);
-  axios.post('http://localhost:3001/', req.body);
-}) */
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
