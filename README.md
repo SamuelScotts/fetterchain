@@ -15,12 +15,14 @@ The main purpose of this application is to provide the ability to hash an image/
 The blockchain is to be a decentralised network of nodes who each contribute without their identity being compromised.  This is to afford uncorrupted cooperation between users.
 
 ## Technologies
-At present, the project ultimately utilises JavaScript.  It primarily uses VueJS/Vuetify (for frontend development) and CryptoJS (as its hashing algorithm).
+At present, the project ultimately utilises JavaScript.  It primarily uses VueJS/Vuetify (for frontend development) and CryptoJS (as its hashing algorithm). Express.js is used as a server for each instance, with the blockchain data being stored there (no data persistance i.e. DB been implemented). Axios is used as the HTTP client for get/post requests.
 
 ## Tasks: 
 - [x] Initialise VueJS Project.
 - [x] Add Vuetify.
 - [x] Add Crypto-JS dependency.
+- [x] Add Express.js.
+- [x] Add Axios.
 - [x] Implement image upload ability.
 - [x] Implement image hasing ability.
 - [x] Add new hash comparision with existing hashes.
@@ -45,7 +47,7 @@ node index.js
 ## Project Images
 Basic output after hashing image and adding block containing them:
 
-![alt text](https://github.com/SamuelScotts/fetterchain/blob/master/images/Screen%20Grab.png)
+![alt text](https://github.com/SamuelScotts/fetterchain/blob/master/images/screenshot.png)
 
 ## Sources
 Used the article below for understanding on how to build blockchain using JavaScript:
@@ -59,4 +61,4 @@ https://github.com/brix/crypto-js
 
 ## Issues
 
-One current issue with the project, is by not using a class constructor, the hash of each block will likely result different each time, depending on the order upon which the data is entered in to same.  To potentially rebuild block construction with better OOP principles.
+One current issue with the project is, by not using a class constructor, the hash of each block will likely result different each time, depending on the order upon which the data is entered in to same.  To potentially rebuild block construction with better OOP principles.
